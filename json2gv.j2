@@ -1,0 +1,68 @@
+digraph G {
+
+  graph [labeljust=l]
+  bgcolor="{{styles.graph.fillcolor}}"
+
+  compound=true
+  rankdir=BT
+  ranksep=0.8
+  # ratio=0.8
+  pad=0.3
+  // splines="polyline"
+  fontname = "{{styles.graph.fontname}}"
+
+  label="Automatically generated with json2gv.py\nhttps://github.com/l2fprod/enterprise-account-utils"
+
+  node [
+    fontname = "{{styles.graph.fontname}}"
+    fontsize=12
+    fontcolor="{{styles.node.fontcolor}}"
+    width=1.1
+    shape = "box"
+  ]
+  edge [
+    fontname = "{{styles.graph.fontname}}"
+    fontsize=8
+    fontcolor="{{styles.node.fontcolor}}"
+    color="{{styles.edge.color}}"
+    arrowhead="vee"
+    style="dotted"
+  ]
+
+  //
+  // Accounts
+  //
+  {% for account in accounts %}
+  "{{ account.crn }}" [
+    label = "{{ account.name }}"
+
+    {% if account.is_enterprise_account %}
+      style="{{styles.enterprise.style}}"
+      color="{{styles.enterprise.color}}"
+      fillcolor="{{styles.enterprise.fillcolor}}"
+      fontcolor="{{styles.enterprise.fontcolor}}"
+    {% endif %}
+  ]
+
+  {% if account.parent %}
+  "{{ account.crn }}" -> "{{ account.parent }}"
+  {% endif %}
+
+  {% endfor %}
+
+  //
+  // Account Groups
+  //
+  {% for group in groups %}
+  "{{ group.crn }}" [
+    label = "{{ group.name }}"
+    style="{{styles.account_group.style}}"
+    color="{{styles.account_group.color}}"
+    fillcolor="{{styles.account_group.fillcolor}}"
+    fontcolor="{{styles.account_group.fontcolor}}"
+  ]
+
+  "{{ group.crn }}" -> "{{ group.parent }}"
+
+  {% endfor %}
+}
